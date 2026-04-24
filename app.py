@@ -145,9 +145,9 @@ def main():
             except:
                 pass
             
-        selected_cb = st.selectbox("Select Target Codebase", options=["[Standalone]"] + existing_cbs)
+        selected_cb = st.selectbox("Select Target Codebase", options=["[General Chat]"] + existing_cbs)
         
-        if selected_cb and selected_cb != "[Standalone]":
+        if selected_cb and selected_cb != "[General Chat]":
             if st.button(f"🗑️ Delete '{selected_cb}'", use_container_width=True):
                 # Delete persistent files and vectors securely to avoid clutter
                 shutil.rmtree(os.path.join(VECTOR_STORE_DIR, selected_cb), ignore_errors=True)
@@ -157,7 +157,7 @@ def main():
                 st.rerun()
 
     # Core Query Module 
-    if selected_cb and selected_cb != "[Standalone]":
+    if selected_cb and selected_cb != "[General Chat]":
         active_codebase = selected_cb
         st.subheader(f"Query Node: `{active_codebase}`")
         
@@ -238,17 +238,17 @@ def main():
         st.markdown("Paste small code snippets (4-5 lines) or ask general programming questions here without mounting a full codebase.")
 
         # Allocate session memory node
-        if "Standalone" not in st.session_state.histories:
-            st.session_state.histories["Standalone"] = []
+        if "General Chat" not in st.session_state.histories:
+            st.session_state.histories["General Chat"] = []
 
         # Reconstruct message objects
-        for message in st.session_state.histories["Standalone"]:
+        for message in st.session_state.histories["General Chat"]:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
         # Map UI Inputs
         if user_query := st.chat_input("Ask a general question or paste a snippet..."):
-            st.session_state.histories["Standalone"].append({"role": "user", "content": user_query})
+            st.session_state.histories["General Chat"].append({"role": "user", "content": user_query})
             with st.chat_message("user"):
                 st.markdown(user_query)
 
@@ -263,7 +263,7 @@ def main():
                                        "Answer general programming questions and analyze short code snippets accurately.")
                         ]
                         # Inject conversational history 
-                        for msg in st.session_state.histories["Standalone"][:-1]:
+                        for msg in st.session_state.histories["General Chat"][:-1]:
                             if msg["role"] == "user":
                                 messages_list.append(("human", msg["content"]))
                             elif msg["role"] == "assistant":
@@ -279,7 +279,7 @@ def main():
                         answer = f"Engine Failure: {str(e)}"
                         st.error(answer)
                         
-            st.session_state.histories["Standalone"].append({
+            st.session_state.histories["General Chat"].append({
                 "role": "assistant",
                 "content": answer
             })
