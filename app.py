@@ -1,7 +1,7 @@
 import os
 import streamlit as st
-import tempfile
 import shutil
+import datetime
 from dotenv import load_dotenv
 
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
@@ -24,6 +24,27 @@ st.set_page_config(page_title="Multi-Codebase Query Agent", layout="wide")
 # Persistent Directory setup
 VECTOR_STORE_DIR = "vector_stores"
 UPLOADED_DATA_DIR = "uploaded_data"
+LAST_WIPE_FILE = "last_wipe.txt"
+
+def enforce_nightly_cleanup():
+    current_date = datetime.date.today().isoformat()
+    last_wipe = ""
+    if os.path.exists(LAST_WIPE_FILE):
+        with open(LAST_WIPE_FILE, "r") as f:
+            last_wipe = f.read().strip()
+            
+    if last_wipe != current_date:
+        # A new day has started globally - trigger the purge!
+        if os.path.exists(VECTOR_STORE_DIR):
+            shutil.rmtree(VECTOR_STORE_DIR, ignore_errors=True)
+        if os.path.exists(UPLOADED_DATA_DIR):
+            shutil.rmtree(UPLOADED_DATA_DIR, ignore_errors=True)
+            
+        # Update the timestamp
+        with open(LAST_WIPE_FILE, "w") as f:
+            f.write(current_date)
+
+enforce_nightly_cleanup()
 os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
 os.makedirs(UPLOADED_DATA_DIR, exist_ok=True)
 
