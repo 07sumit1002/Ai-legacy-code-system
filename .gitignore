@@ -1,0 +1,18 @@
+# Environment Variables (CRITICAL: Prevents API key leaks)
+.env
+
+# Virtual Environments
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Data & Databases (Prevents uploading massive vector stores to GitHub)
+vector_stores/
+uploaded_data/
+faiss_legacy_index/
+legacy_data/
+
+# OS generated files
+.DS_Store
+Thumbs.db

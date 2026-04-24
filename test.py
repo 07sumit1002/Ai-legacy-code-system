@@ -1,11 +1,10 @@
 from google import genai
+import os
+from dotenv import load_dotenv
 
-# Configure your API key
-API_KEY = "AIzaSyBVwsWFYJ5EqZWzH_4c5HtcIDwpALk3Ijo"
-
-
-# Configure your API key directly in the client
-# API_KEY = "gen-lang-client-0317658831"
+# Load your API key securely from .env
+load_dotenv()
+API_KEY = os.environ.get("GOOGLE_API_KEY")
 
 def test_api_key():
     print("Testing Gemini API Key with the new SDK...")
