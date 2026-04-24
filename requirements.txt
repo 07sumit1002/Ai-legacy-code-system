@@ -4,4 +4,5 @@ langchain-google-genai
 langchain-community
 faiss-cpu
 tiktoken
+schedule
 python-dotenv

@@ -146,6 +146,15 @@ def main():
                 pass
             
         selected_cb = st.selectbox("Select Target Codebase", options=["[Standalone]"] + existing_cbs)
+        
+        if selected_cb and selected_cb != "[Standalone]":
+            if st.button(f"🗑️ Delete '{selected_cb}'", use_container_width=True):
+                # Delete persistent files and vectors securely to avoid clutter
+                shutil.rmtree(os.path.join(VECTOR_STORE_DIR, selected_cb), ignore_errors=True)
+                shutil.rmtree(os.path.join(UPLOADED_DATA_DIR, selected_cb), ignore_errors=True)
+                if selected_cb in st.session_state.histories:
+                    del st.session_state.histories[selected_cb]
+                st.rerun()
 
     # Core Query Module 
     if selected_cb and selected_cb != "[Standalone]":
